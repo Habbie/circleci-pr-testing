@@ -27,7 +27,7 @@ commands:
             git show -s
 
 jobs:
-  build-auth:
+  build:
     docker:
       - image: debian:stretch
 
