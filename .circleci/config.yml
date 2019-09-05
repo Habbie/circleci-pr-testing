@@ -13,6 +13,8 @@ commands:
       - run:
           name: Clone the repo
           command: |
+            set -x
+            env
             if [ -n "$CIRCLE_PR_NUMBER" ]
             then
               echo === Checking out PR "$CIRCLE_PR_NUMBER" from "$CIRCLE_REPOSITORY_URL"
