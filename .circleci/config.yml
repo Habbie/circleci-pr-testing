@@ -1,0 +1,42 @@
+version: 2.1
+
+commands:
+  checkout-shallow:
+    description: "Do a shallow checkout of the repository"
+    steps:
+      - run:
+          name: Install git and openssh
+          command: apt-get update && apt-get -qq -y install openssh-client git
+      - run:
+          name: Store the keyid for the git repo
+          command: mkdir -p $HOME/.ssh && ssh-keyscan $(echo ${CIRCLE_REPOSITORY_URL} | sed 's,.*@\([^:]*\):.*,\1,') > $HOME/.ssh/known_hosts
+      - run:
+          name: Clone the repo
+          command: |
+            if [ -n "$CIRCLE_PR_NUMBER" ]
+            then
+              echo === Checking out PR "$CIRCLE_PR_NUMBER" from "$CIRCLE_REPOSITORY_URL"
+              git clone --depth 1 $CIRCLE_REPOSITORY_URL ~/project
+              cd ~/project
+              git fetch --depth 1 origin +refs/pull/${CIRCLE_PR_NUMBER}/merge
+              git checkout -qf FETCH_HEAD
+            else
+              echo === Checking out branch "${CIRCLE_BRANCH}" from "$CIRCLE_REPOSITORY_URL"
+              git clone --depth 1 --branch $CIRCLE_BRANCH $CIRCLE_REPOSITORY_URL ~/project
+            fi
+            git show -s
+
+jobs:
+  build-auth:
+    docker:
+      - image: debian:stretch
+
+    steps:
+      - checkout-shallow
+
+workflows:
+  version: 2
+
+  build-and-test-all:
+    jobs:
+      - build
