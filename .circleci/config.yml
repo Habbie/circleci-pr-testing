@@ -43,6 +43,9 @@ jobs:
     docker:
       - image: debian:stretch
     steps:
+      - run:
+          name: ca certs
+          command: apt-get update && apt-get -qq -y install ca-certificates
       - attach_workspace:
           at: /opt
       - run:
