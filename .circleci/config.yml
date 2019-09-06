@@ -53,4 +53,6 @@ workflows:
   build-and-test-all:
     jobs:
       - build
-      - verify
+      - verify:
+          requires:
+            - build
