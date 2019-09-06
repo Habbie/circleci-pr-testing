@@ -39,6 +39,13 @@ jobs:
 
     steps:
       - checkout-shallow
+  verify:
+    docker:
+      - image: debian:stretch
+    steps:
+      - run:
+          name: find
+          command: find /opt -ls
 
 workflows:
   version: 2
@@ -46,3 +53,4 @@ workflows:
   build-and-test-all:
     jobs:
       - build
+      - verify
