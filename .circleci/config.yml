@@ -43,6 +43,8 @@ jobs:
     docker:
       - image: debian:stretch
     steps:
+      - attach_workspace:
+          at: /opt
       - run:
           name: find
           command: find /opt -ls
